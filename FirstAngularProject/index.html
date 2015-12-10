@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>First AngularJS Project</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+</head>
+<body ng-app>
+<div>
+    <label>Name:</label>
+    <input type="text" ng-model="yourName" placeholder="Enter a name here">
+    <hr>
+    <h1>Hello {{yourName}}!</h1> <!--This is the non-preferred way to do it - customers can see the handlebars.-->
+    <h1>Hello <span ng-bind="yourName"></span>!</h1> <!--Do it this way instead!-->
+    <select ng-model="yourName">
+        <option value="1" selected>My Name</option>
+        <option value="2">Your Name</option>
+    </select>
+
+    <tt></tt>
+
+    <script>
+
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Registration Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="patientRegForm.js"></script>
+
+    <style>
+        .animate-if {
+            background: white;
+        }
+
+        .animate-if.ng-enter, .animate-if.ng-leave {
+            transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        }
+
+        .animate-if.ng-enter,
+        .animate-if.ng-leave.ng-leave-active {
+            opacity: 0;
+        }
+
+        .animate-if.ng-leave,
+        .animate-if.ng-enter.ng-enter-active {
+            opacity: 1;
+        }
+
+        .noInsurance {
+            background-color: red;
+            color: white;
+        }
+        .form-control {
+            width: auto;
+        }
+        .odd {
+            color: red;
+        }
+        .even {
+            color: blue;
+        }
+    </style>
+
+</head>
+<body ng-app="registrationApp" ng-init="children=[]">
+<div class="container">
+    <div class="row">
+        <div ng-controller="registrationController" class="col-lg-12">
+            <form novalidate>
+                Name: <input type="text" ng-model="user.Name" class="form-control"><br>
+        <span ng-if="user.Name" class="animate-if">
+            Is this your full legal name?<br>
+            <select ng-model="myCheck" class="form-control">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+            <div ng-if="myCheck=='No'" class="animate-if">
+                Full Legal Name: <input type="text" ng-model="user.Name"><br>
+            </div>
+            <br>
+        </span>
+                Date of Birth: <input type="text" ng-model="user.DOB" class="form-control"><br>
+                Gender: <input type="text" ng-model="user.Gender" class="form-control"><br>
+
+                <div ng-class="{noInsurance: user.HealthInsurance=='No'}">
+                    Do you have Health Insurance?
+                    <form>
+                        <label>
+                            <input type="radio" ng-model="user.HealthInsurance" value="Yes">
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="user.HealthInsurance" value="No">
+                            No
+                        </label>
+                    </form>
+
+                    <div ng-if="user.HealthInsurance=='No'" class="animate-if"
+                         ng-class="{noInsurance: user.HealthInsurance=='No'}">
+                        You are registering without health insurance! You will be liable to pay the full cost of the
+                        visit.
+                        <br>
+                    </div>
+                    <div ng-if="user.HealthInsurance=='Yes'" class="animate-if">
+                        Health Insurance Company: <input type="text" ng-model="user.InsuranceCo"><br>
+                        Insured Name: <input type="text" ng-model="user.InsuredName"><br>
+                        Insured ID: <input type="text" ng-model="user.InsuredID"><br>
+                        Insured Company: <input type="text" ng-model="user.InsuredCompany"><br>
+                        <br>
+                    </div>
+                </div>
+
+                <div>
+                    Do you have Children?
+                    <select ng-model="user.haveChildren" class="form-control">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <div ng-if="user.haveChildren=='Yes'" class="animate-if">
+                        <button ng-click="children.push({name:'',bdate:''})" class="btn btn-primary">Add Child</button>
+                        <div ng-repeat="child in children" ng-class-odd="'odd'" ng-class-even="'even'">
+                            Name: <input type="text" ng-model="child.name"><br>
+                            Birthday: <input type="text" ng-model="child.bdate"><br>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    Which is your favorite child?
+                    <select class="form-control">
+                        <option>All</option>
+                        <option ng-repeat="child in children" ng-bind="child.name"></option>
+                    </select>
+
+                </div>
+
+                <label>ngCheck stuff</label> <input type="checkbox" ng-model="ThaMaster"><br>
+                <input type="checkbox" id="checkSlave" ng-checked="ThaMaster">
+
+                <form ng-submit="submit()" ng-controller="SubmitController">
+                    <input type="text" ng-model="text" name="text" ng-list required>
+                    <input type="submit" id="submit" value="Submit">
+                    <pre>list={{list}}</pre>
+                </form>
+
+
+            </form>
+            <br><br><br>
+            <p>form = {{user}}</p>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
