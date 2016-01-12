@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>AngularJS Custom Filter Contest</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/app.controller.js"></script>
+    <script src="app/identifier/identifier.module.js"></script>
+    <script src="app/identifier/identifier.service.js"></script>
+    <script src="app/filters/filters.module.js"></script>
+    <script src="app/filters/toCamelCaseUpperSample.filter.js"></script>
+    <script src="app/filters/snake_case_underscores_lower.js"></script>
+</head>
+<body ng-controller="AppController as vm">
+    <div class="container-fluid">
+        <h1>AngularJS Custom Filter Contest</h1>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <th>String to Test</th>
+                <th>Original Case Type</th>
+                <th>Sample Filter</th>
+                <th>Snake Case Lower Filter</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="test in vm.tests">
+                    <td><span ng-bind="test"></span></td>
+                    <td><span ng-bind="vm.identifier.getCaseType(test)"></span></td>
+                    <td><span ng-bind="test | toCamelcaseUpperSample"></span></td>
+                    <td><span ng-bind="test | to_snake_case_underscores_lower"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
