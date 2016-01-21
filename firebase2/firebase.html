@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+    <script>
+
+        var app = angular.module("app", []);
+        app.controller("MainController", MainController);
+
+        function MainController($scope, $http) {
+
+            // IMPORTANT: REPLACE WITH YOUR OWN FIREBASE URL
+            var url = 'https://blistering-heat-9918.firebaseio.com/test';
+
+            var vm = this;
+            vm.postData = { yourData: "Type something here!" };
+            vm.data = [];
+            vm.post = post;
+            vm.get = get;
+            vm.update = update;
+            vm.deleteMe = deleteMe;
+
+            function post() {
+                $http.post(url + '.json', vm.postData).then(function (response) {
+                    vm.response = response;
+                    var responseKey = response.data.name;
+                    vm.data.push({key: responseKey});
+                });
+            }
+
+            function get(item) {
+                $http.get(url + '/' + item.key + '.json').then(function (response) {
+                    item.value = response.data.yourData;
+                });
+            }
+
+            function update(item) {
+                $http.put(url + '/' + item.key + '.json', {'yourData': item.value}).then(function (response) {
+                    vm.response = response;
+                });
+            }
+
+            function deleteMe(item) {
+                $http.delete(url + '/' + item.key + '.json').success(function () {
+                    for (var i = 0; i<vm.data.length; i++) {
+                        if (vm.data[i].key == item.key) {
+                            vm.data.splice(i,1);
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+</head>
+<body ng-app="app">
+
+    <div ng-controller="MainController as vm">
+        <p>
+            Type something to POST to your Firebase here:
+        </p>
+        <input ng-model="vm.postData.yourData" size="40"/>
+        <button ng-click="vm.post()">Send POST</button>
+        <p>
+            You just POSTed to key:
+            {{ vm.response.data.name }}
+        </p>
+
+        <p>Retrieve data you POSTed earlier with GET:</p>
+        <div ng-repeat="item in vm.data">
+            <button ng-bind="'Click to GET data from Firebase with key ' + item.key"
+                    ng-click="vm.get(item); item.clicked = true"></button>
+            <p ng-show="item.clicked">
+                The data you POSTed earlier that is associated with this key is:
+                {{ item.value }}
+            </p>
+            <input ng-model="item.value">
+            <button ng-click="vm.update(item)">Update</button>
+            <button ng-click="vm.deleteMe(item)">Delete</button>
+        </div>
+
+
+
+    </div>
+
+</body>
+</html>

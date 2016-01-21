@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <script data-require="angular.js@1.1.5" data-semver="1.1.5" src="http://code.angularjs.org/1.1.5/angular.min.js"></script>
+    <script src="https://rawgithub.com/gsklee/ngStorage/master/ngStorage.js"></script>
+
+    <script>
+        angular.module('app', [
+            'ngStorage'
+        ]).
+
+        controller('Ctrl', function($scope, $localStorage) {
+            $scope.$storage = $localStorage.$default({
+                x: 42
+            });
+
+            $scope.deleteX = function() {
+                delete $scope.$storage.x;
+            };
+
+            $scope.deleteY = function() {
+                delete $localStorage.y;
+            };
+        });
+    </script>
+</head>
+
+<body ng-controller="Ctrl">
+    <button ng-click="$storage.x = $storage.x + 1">{{$storage.x}}</button> + <button ng-click="$storage.y = $storage.y + 1">{{$storage.y}}</button> = {{$storage.x + $storage.y}}
+    <hr>
+    <button ng-click="deleteX()">Delete $scope.$storage.x</button> | <button ng-click="deleteY()">Delete $localStorage.y</button>
+</body>
+
+</html>
