@@ -11,16 +11,16 @@
 </head>
 <body ng-app="sampleApp">
 
-<div ng-controller="loginCtrl">
+<div ng-controller="loginCtrl" ng-show="!success.loggedIn">
     <Span>Username: </Span>
-    <input type="text" ng-model="user">
+    <input type="text" ng-model="user.userName">
     <Span>Password: </Span>
-    <input type="text" ng-model="pass">
+    <input type="password" ng-model="pass">
     <button ng-click="Login()">Login</button>
 </div>
 
 
-<div ng-controller="ChatCtrl">
+<div ng-controller="ChatCtrl" ng-show="success.loggedIn">
 
 
     <ul class="chatbox">

@@ -2,7 +2,7 @@
 var app = angular.module("sampleApp", ["firebase"]);
 
 // this factory returns a synchronized array of chat messages
-app.factory("chatMessages", ["$firebaseArray", "$firebaseAuth",
+app.factory("chatMessages", ["$firebaseArray",
     function($firebaseArray) {
         // create a reference to the database location where we will store our data
         // var randomRoomId = Math.round(Math.random() * 100000000);
@@ -13,10 +13,11 @@ app.factory("chatMessages", ["$firebaseArray", "$firebaseAuth",
     }
 ]);
 
-app.controller("ChatCtrl", ["$scope", "chatMessages", "loginCtrl",
+app.controller("ChatCtrl", ["$scope", "chatMessages", "comboService",
     // we pass our new chatMessages factory into the controller
-    function($scope, chatMessages, loginCtrl) {
-        $scope.user = loginCtrl.user;
+    function($scope, chatMessages, comboService) {
+        $scope.user = comboService.userName;
+        $scope.success = comboService.success;
 
         // we add chatMessages array to the scope to be used in our ng-repeat
         $scope.messages = chatMessages;
@@ -29,7 +30,7 @@ app.controller("ChatCtrl", ["$scope", "chatMessages", "loginCtrl",
             // Check if username is blank, and force adding the user.
 
             $scope.messages.$add({
-                from: $scope.user,
+                from: $scope.user.userName,
                 content: $scope.message
             });
 
@@ -56,18 +57,40 @@ app.factory('loginService', ["$firebaseAuth",
     }
 ]);
 
-app.controller('loginCtrl', ["$scope", "loginService",
-    function($scope, loginService) {
-        $scope.user = "brovery@yahoo.com";
-        $scope.pass = "hello";
+app.controller('loginCtrl', ["$scope", "loginService", "comboService",
+    function($scope, loginService, comboService) {
+        $scope.user = comboService.userName;
+        $scope.pass = "";
+        $scope.success = comboService.success;
+        $scope.googleLogin = googleLogin;
 
         $scope.Login = function() {
+            console.log($scope.user);
             var login = loginService.$authWithPassword({
-                email: $scope.user,
+                email: $scope.user.userName,
                 password: $scope.pass
+            }).then(function() {
+                comboService.toggleLogin();
+            }).catch(function(error) {
+                console.error("Authentication failed: ", + error);
             });
+        };
 
+        $scope.googleLogin = function() {
 
         };
+    }
+]);
+
+app.service('comboService', [
+    function() {
+        var cs = this;
+        cs.success = {"loggedIn": false};
+        cs.userName = {"userName": ""};
+        cs.toggleLogin = toggleLogin;
+
+        function toggleLogin() {
+            cs.success.loggedIn = true;
+        }
     }
 ]);
