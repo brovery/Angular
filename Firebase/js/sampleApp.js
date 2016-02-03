@@ -1,15 +1,13 @@
-// define our app and dependencies (remember to include firebase!)
-var app = angular.module("sampleApp", ["firebase"]);
+var app = angular.module("sampleApp", ["restangular", "firebase"]);
 
-// this factory returns a synchronized array of chat messages
-app.factory("chatMessages", ["$firebaseArray",
-    function($firebaseArray) {
-        // create a reference to the database location where we will store our data
-        // var randomRoomId = Math.round(Math.random() * 100000000);
-        var ref = new Firebase("https://blistering-heat-9918.firebaseio.com/chatRoom");
+app.factory("chatMessages", ["Restangular",
+    function(Restangular) {
+        var ref = "https://blistering-heat-9918.firebaseio.com/";
 
-        // this uses AngularFire to create the synchronized array
-        return $firebaseArray(ref);
+        return Restangular.setBaseUrl(ref)
+            .setRequestSuffix('.json')
+            .setFullResponse(true)
+            .service('chatRoom');
     }
 ]);
 
@@ -18,35 +16,42 @@ app.controller("ChatCtrl", ["$scope", "chatMessages", "comboService",
     function($scope, chatMessages, comboService) {
         $scope.user = comboService.userName;
         $scope.success = comboService.success;
+        $scope.updateMess = updateMess;
+        updateMess();
 
-        // we add chatMessages array to the scope to be used in our ng-repeat
-        $scope.messages = chatMessages;
+        function updateMess() {
+            chatMessages.one().get().then(function(resp) {
+                $scope.messages = resp.data.plain();
+                $scope.data = resp.data;
+            });
+        }
 
-        // a method to create new messages; called by ng-submit
         $scope.addMessage = function() {
-            // calling $add on a synchronized array is like Array.push(),
-            // except that it saves the changes to our database!
 
-            // Check if username is blank, and force adding the user.
-
-            $scope.messages.$add({
+            chatMessages.post({
                 from: $scope.user.userName,
                 content: $scope.message
+            }).then(function() {
+                updateMess();
             });
 
-            // reset the message input
             $scope.message = "";
         };
 
-        // if the messages are empty, add something for fun!
-        $scope.messages.$loaded(function() {
-            if ($scope.messages.length === 0) {
-                $scope.messages.$add({
-                    from: "Firebase Docs",
-                    content: "Hello world!"
-                });
-            }
-        });
+        $scope.deleteMessage = function(key) {
+            $scope.data.customDELETE(key).then(function() {
+                updateMess();
+            });
+        };
+
+        $scope.updateMessage = function(key) {
+            var newVal = window.prompt("New value?");
+
+            $scope.data.customOperation('patch', key, "", "", {content: newVal}).then(function() {
+                updateMess();
+            });
+        };
+
     }
 ]);
 
@@ -62,10 +67,9 @@ app.controller('loginCtrl', ["$scope", "loginService", "comboService",
         $scope.user = comboService.userName;
         $scope.pass = "";
         $scope.success = comboService.success;
-        $scope.googleLogin = googleLogin;
+
 
         $scope.Login = function() {
-            console.log($scope.user);
             var login = loginService.$authWithPassword({
                 email: $scope.user.userName,
                 password: $scope.pass
@@ -76,9 +80,7 @@ app.controller('loginCtrl', ["$scope", "loginService", "comboService",
             });
         };
 
-        $scope.googleLogin = function() {
 
-        };
     }
 ]);
 
@@ -86,7 +88,7 @@ app.service('comboService', [
     function() {
         var cs = this;
         cs.success = {"loggedIn": false};
-        cs.userName = {"userName": ""};
+        cs.userName = {"userName": "brovery@yahoo.com"};
         cs.toggleLogin = toggleLogin;
 
         function toggleLogin() {

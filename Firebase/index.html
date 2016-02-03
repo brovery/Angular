@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
     <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-resource.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/restangular/1.5.1/restangular.min.js"></script>
+
     <script src="js/sampleApp.js"></script>
 
 </head>
 <body ng-app="sampleApp">
 
-<div ng-controller="loginCtrl" ng-show="!success.loggedIn">
+<div ng-controller="loginCtrl"> <!--ng-show="!success.loggedIn">-->
     <Span>Username: </Span>
     <input type="text" ng-model="user.userName">
     <Span>Password: </Span>
@@ -20,11 +24,15 @@
 </div>
 
 
-<div ng-controller="ChatCtrl" ng-show="success.loggedIn">
+<div ng-controller="ChatCtrl"> <!--ng-show="success.loggedIn">-->
 
 
     <ul class="chatbox">
-        <li ng-repeat="message in messages">{{ message.from }}: {{ message.content }}</li>
+        <li ng-repeat="(key, message) in messages">
+            {{ message.from }}: {{ message.content }}
+            <input type="button" value="Delete" ng-click="deleteMessage(key)">
+            <input type="button" value="Update" ng-click="updateMessage(key)">
+        </li>
     </ul>
     <form ng-submit="addMessage()">
         <input type="text" ng-model="message">
