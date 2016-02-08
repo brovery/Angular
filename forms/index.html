@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <style type="text/css">
+        body {
+            padding: 20px;
+        }
+        /*.css-form input.ng-invalid.ng-touched {*/
+            /*background-color: #FA787E;*/
+        /*}*/
+
+        /*.css-form input.ng-valid.ng-touched {*/
+            /*background-color: #78FA89;*/
+        /*}*/
+    </style>
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+    <script src="app.js"></script>
+
+</head>
+
+<body ng-app="formExample">
+    <div class="container" ng-controller="ExampleController">
+        <div class="row">
+            <div class="col-sm-6">
+
+                <h2>Basic Form</h2>
+                <form novalidate class="form-horizontal css-form" name="myform">
+
+                    <div class="form-group" ng-class="{'has-error': ((myform.myname.$touched || myform.$submitted) && myform.myname.$invalid)}">
+                        <label for="inputName" class="col-sm-3 control-label">Name:</label>
+                        <div class="col-sm-9">
+                            <input id="inputName" name="myname" class="form-control" type="text" ng-model="user.name" ng-model-options="{updateOn: 'blur'}" required />
+                            <span ng-if="(myform.myname.$touched || myform.$submitted) && myform.myname.$invalid" class="help-block">The name should not be empty</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="{'has-error': ((myform.myLname.$touched || myform.$submitted) && myform.myLname.$invalid)}">
+                        <label for="inputLName" class="col-sm-3 control-label">L Name:</label>
+                        <div class="col-sm-9">
+                            <input id="inputLName" name="myLname" class="form-control" type="text" ng-model="user.lname" ng-model-options="{debounce: 500}" required />
+                            <span ng-if="(myform.myLname.$touched || myform.$submitted) && myform.myLname.$invalid" class="help-block">The name should not be empty</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="{'has-error': myform.myusername.$error.myusername}">
+                        <label for="inputUsername" class="col-sm-3 control-label">User Name:</label>
+                        <div class="col-sm-9">
+                            <input id="inputUsername" name="myusername" class="form-control" type="text" ng-model="user.username" required username/>
+                            <span ng-if="myform.myusername.$pending.myusername" class="help-block">Checking availability...</span>
+                            <span ng-if="myform.myusername.$error.myusername" class="help-block">This username is not available</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputEmail" class="col-sm-3 control-label">Email:</label>
+                        <div class="col-sm-9">
+                            <input id="inputEmail" name="myemail" class="form-control" type="email" ng-model="user.email" required />
+                            <span ng-hide="myform.myemail.$untouched || myform.myemail.$valid" class="help-block">Please enter a valid email address</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="{'has-error': (myform.myage.$touched || myform.$submitted) && myform.myage.$invalid}">
+                        <label for="inputAge" class="col-sm-3 control-label">Age:</label>
+                        <div class="col-sm-9">
+                            <input id="inputAge" min="0" name="myage" class="form-control" type="number" ng-model="user.age" integer required>
+                            <span ng-if="(myform.myage.$touched || myform.$submitted) && myform.myage.$invalid" class="help-block">Please enter an integer!</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Gender:</label>
+                        <div class="col-sm-9">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="user.gender" value="male"/>Male
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="user.gender" value="female"/>Female
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="button" class="btn btn-default" ng-click="reset()" value="Reset"/>
+                    <input type="submit" class="btn btn-primary" ng-click="update(user)" value="Save"/>
+                </form>
+
+                <h2>User</h2>
+                <pre>user = {{user | json}}</pre>
+
+                <h2>Master</h2>
+                <pre>master = {{master | json}}</pre>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
